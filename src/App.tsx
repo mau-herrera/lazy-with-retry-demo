@@ -11,6 +11,7 @@ const mapIndexToRoute: Record<number, string> = {
   3: '/lazy-loaded-with-retries',
   4: '/lazy-loaded-with-refresh',
   5: '/lazy-loaded-prefetch',
+  6: '/using-library',
 };
 
 const mapRouteToIndex: Record<string, number> = {
@@ -20,6 +21,7 @@ const mapRouteToIndex: Record<string, number> = {
   '/lazy-loaded-with-retries': 3,
   '/lazy-loaded-with-refresh': 4,
   '/lazy-loaded-prefetch': 5,
+  '/using-library': 6,
 };
 
 const App = () => {
@@ -58,6 +60,7 @@ const App = () => {
             <Tab label="Lazy Loaded With Retries" />
             <Tab label="Lazy Loaded With Refresh" />
             <Tab label="Pre Fetch" onMouseEnter={prefetchBunny}/>
+            <Tab label="Using library"/>
           </Tabs>
         </Box>
           <Outlet/>

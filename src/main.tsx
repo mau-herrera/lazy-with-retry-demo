@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router'
+import { lazyWithRetry } from 'lazy-with-retry';
 import LazyWithRetries from './utils/lazy-with-retries.tsx'
 import LazyWithRefresh from './utils/lazy-with-refresh.tsx'
 import './index.css'
@@ -20,6 +21,24 @@ const Bunny3 = lazy(() => import('./components/Bunny3.tsx'));;
 const Bunny4 = LazyWithRetries(() => import('./components/Bunny4.tsx'), ErrorFallback);
 const Bunny5 = LazyWithRefresh(() => import('./components/Bunny5.tsx'), ErrorFallback, { forceRefreshOnFailure: {forceRefresh: true, sessionCacheKey: 'bunny5'} });
 const Bunny6 = LazyWithRefresh(() => import('./components/Bunny6.tsx'), ErrorFallback, { forceRefreshOnFailure: {forceRefresh: true, sessionCacheKey: 'bunny6'} });
+const Bunny7 = lazyWithRetry(
+  () => import('./components/Bunny7.tsx'),
+  ErrorFallback, 
+  {
+    forceRefreshOnFailure: {forceRefresh: true, sessionCacheKey: 'bunny7'},
+    interval: 1000,
+    onFailure: (error) => {
+      console.error('Error loading component:', error);
+    },
+    onRefresh: () => {
+      console.log('Component refreshed');
+    },
+    onRetry: (error, attempt) => {
+      console.log(`Retry attempt ${attempt} after error:`, error);
+    },
+    retries: 3,
+  },
+);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -32,6 +51,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="lazy-loaded-with-retries" element={<Suspense fallback={<CircularIndeterminate />} ><Bunny4 /></Suspense>} />
           <Route path="lazy-loaded-with-refresh" element={<Suspense fallback={<CircularIndeterminate />} ><Bunny5 /></Suspense>} />
           <Route path="lazy-loaded-prefetch" element={<Suspense fallback={<CircularIndeterminate />} ><Bunny6 /></Suspense>} />
+          <Route path="using-library" element={<Suspense fallback={<CircularIndeterminate />} ><Bunny7 /></Suspense>} />
           <Route path="*" element={<div>Not Found</div>} />
           <Route index element={<Bunny1 />} />
         </Route>
